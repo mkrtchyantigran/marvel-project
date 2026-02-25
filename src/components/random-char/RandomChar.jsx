@@ -1,0 +1,45 @@
+import { Component } from "react";
+import "./randomChar.scss";
+
+import thor from "../../resources/img/thor.jpg";
+import mjolnir from "../../resources/img/mjolnir.png";
+
+export default class RandomChar extends Component {
+    render() {
+        return (
+            <div className="randomchar">
+                <div className="randomchar__block">
+                    <img src={thor} alt="Thor" className="randomchar__img" />
+                    <div className="randomchar_info">
+                        <div className="randomchar__name">Thor</div>
+                        <p className="randomchar__descr">
+                            As the Norse God of thunder and lightning, Thor wields one of the greatest weapons ever made, the enchanted hammer Mjolnir. While others have described Thor as an over-muscled, oafish imbecile, he's quite smart and compassionate...
+                        </p>
+                        <div className="randomchar_btns">
+                            <a href="#" className="btn btn__main">
+                                <div className="inner">homepage</div>
+                            </a>
+                            <a href="#" className="btn btn__secondary">
+                                <div className="inner">Wiki</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div className="randomchar__static">
+                    <p className="randomchar_title">
+                         Random character for today!<br />
+                         Do you want to get to know him better?
+                    </p>
+                    <p className="randomchar__title">
+                        Or choose another one!
+                    </p>
+                    <button className="btn btn__main">
+                        <div className="inner">Try It</div>
+                    </button>
+                    <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />
+                </div>
+            </div>
+        )
+    }
+}
+
