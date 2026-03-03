@@ -6,8 +6,16 @@ import CharList from "../char-list/CharList";
 import CharInfo from "../char-info/CharInfo";
 
 import decoration from "../../resources/img/decoration.png";
-
+import { ErrorBoundary } from '../errorBoundary/ErrorBoundary';
 export default class App extends Component{
+   state = {
+      selectedChar: null
+    };
+
+  onCharSelected =(id) => {
+    this.setState({selectedChar: id});
+  }
+  
   render() {
     return (
       <div className="app">
@@ -15,8 +23,10 @@ export default class App extends Component{
         <main>
           <RandomChar />
           <div className="char__content">
-            <CharList />
-            <CharInfo />
+            <CharList onCharSelected={this.onCharSelected} />
+            <ErrorBoundary>
+              <CharInfo charId={this.state.selectedChar}  />
+            </ErrorBoundary>
           </div>
           <img src={decoration} alt="decoration" className="bg-decoration" />
         </main>
