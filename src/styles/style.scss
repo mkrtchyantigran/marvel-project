@@ -1,5 +1,5 @@
-@import "variables";
-@import "buttons";
+@import "./variables";
+@import "./buttons";
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -76,3 +76,8 @@ main {
     margin-top: 50px;
     position: relative;
 }
+
+ .loader {
+    display: flex;
+    justify-content: center;
+  }
