@@ -1,6 +1,7 @@
 export default class marvelService {
     #API_URL = "https://marvel-server-zeta.vercel.app";
     #API_KEY = "d4eecb0c66dedbfae4eab45d312fc1df";
+    #LIMIT = 6;
 
     getComicsJson = async (url) => {
         const res = await fetch(url);
@@ -9,12 +10,11 @@ export default class marvelService {
             throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
 
-        
         return await res.json();
     }
 
-    getCharactersAll = async () => {
-        const res = this.getComicsJson(`${this.#API_URL}/characters?apikey=${this.#API_KEY}`);
+    getCharactersAll = async (offset = 0) => {
+        const res = await this.getComicsJson(`${this.#API_URL}/characters?limit=${this.#LIMIT}&offset=${offset}&apikey=${this.#API_KEY}`);
         return res.data.results.map(this.transformCharacter);
     }
 
