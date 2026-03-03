@@ -1,4 +1,5 @@
 @import "../../styles/variables.scss";
+@import "../../styles/style.scss";
 
 .char {
   &__info {
@@ -7,6 +8,9 @@
     position: relative;
     z-index: 5;
     background: $white;
+    position: sticky;
+    top: 16px;
+    left: 0;
 
     &-name {
       font-weight: bold;
@@ -63,7 +67,7 @@
   }
   &__select {
     font-weight: bold;
-    font-style: 18px;
+    font-size: 18px;
     line-height: 24px;
     text-align: center;
   }
