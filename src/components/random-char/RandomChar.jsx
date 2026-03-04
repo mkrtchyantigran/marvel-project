@@ -1,9 +1,9 @@
 import { Component } from "react";
 import "./randomChar.scss";
-
 import mjolnir from "../../resources/img/mjolnir.png";
 import marverService from "../../services/service";
 import Loader from "../loader/loader";
+import Error from "../error/Error";
 
 export default class RandomChar extends Component {
 
@@ -16,7 +16,7 @@ export default class RandomChar extends Component {
     
     componentDidMount() {
         this.updateChar();
-        this.timerId = setInterval(this.updateChar, 3000);
+        this.timerId = setInterval(this.updateChar, 6000000);
     }
 
     componentWillUnmount() {
@@ -44,7 +44,7 @@ export default class RandomChar extends Component {
         const {char, isLoading, isError} = this.state;
         return (
             <div className="randomchar">
-                {isError ? <p style={{textAlign: "center"}}>Error</p> : null}
+                {isError ? <Error /> : null}
                 {isLoading ? <Loader /> : null}
                 {!(isLoading || isError) ? <View char={char} /> : null}
 
