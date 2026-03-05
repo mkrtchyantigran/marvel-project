@@ -1,9 +1,10 @@
-import { Component } from 'react'
+import { Component, createRef } from 'react'
 import marvelService from '../../services/service';
 import "./charList.scss";
 import Loader from '../loader/loader';
 import Error from '../error/Error';
 export default class CharList extends Component {
+  RefForSelected = createRef();
 
   state = {
     charList: [],
@@ -11,13 +12,28 @@ export default class CharList extends Component {
     isRequestLoading: false,
     isError: false,
     isNoMoreChars: false,
-    offset: 0
+    offset: 0,
+    isScrolled: false
+  }
+
+
+
+  onScroll = () => {
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollY + windowHeight >= documentHeight) {
+      this.setState({ isScrolled: true });
+      this.onRequest(this.state.offset);
+    }
   }
 
   marvelService = new marvelService();
 
   componentDidMount() {
     this.onRequest();
+    window.addEventListener('scroll', this.onScroll);
   }
 
   componentDidUpdate(_, prevState) {
@@ -27,6 +43,10 @@ export default class CharList extends Component {
       })
     }
   }
+
+  componentWillUnmount() {
+     window.removeEventListener('scroll', this.onScroll);
+  } 
 
   onRequest(offset = 0) {
     this.marvelService.getCharactersAll(offset)
@@ -41,8 +61,11 @@ export default class CharList extends Component {
 
   onCharListLoaded = (newCharList) => {
     this.setState(({ offset, charList }) => {
+      const existingIds = new Set(charList.map(char => char.id));
+      const filteredNewChars = newCharList.filter(char => !existingIds.has(char.id));
       return {
-        charList: [...charList, ...newCharList],
+        
+        charList: [...charList, ...filteredNewChars],
         isLoading: false,
         isError: false,
         offset: offset + 6
@@ -58,9 +81,12 @@ export default class CharList extends Component {
     const items = arr.map((item) => {
       return (
         <li
-          onClick={() => this.props.onCharSelected(item.id)}
-          className="char__item"
           key={item.id}
+          onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.RefForSelected.current = item.id;
+          }}
+          className={`char__item ${this.RefForSelected.current === item.id ? "char__item_selected" : ""}`}
         >
           <img src={item.thumbnail ? item.thumbnail : "Error"} alt={item.name} />
           <div className="char__name">{item.name}</div>
@@ -81,15 +107,14 @@ export default class CharList extends Component {
         {isError ? <Error /> : null}
         {isLoading || isRequestLoading ? <Loader /> : null}
         {!(isLoading || isRequestLoading || isError) ? items : null}
+        
 
         {
-          isNoMoreChars ? null : <button
-              onClick={() => this.onRequest(this.state.offset)}
-              className='btn btn__main btn__long'
-              disabled={this.state.isRequestLoading}
-            >
-              <div className="inner">{this.state.isRequestLoading ? "loading..." : "load more"}</div>
-            </button>
+          isNoMoreChars ? null : 
+          <div className="inner">
+            {this.state.isScrolled ? <Loader size={60} /> : null}
+          </div>
+
         }
       </div>
     );
