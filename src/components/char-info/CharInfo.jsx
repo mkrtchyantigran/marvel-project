@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types';
+import { v4 as uuidv4, v4 } from 'uuid';
 import marverService from "../../services/service";
 import Loader from '../loader/loader';
 import Error from '../error/Error';
@@ -100,7 +102,7 @@ const View = ({ char }) => {
       <ul className="char__comics-list">
         {char.comics.map((comic => {
           return (
-            <li className="char__comics-item" key={comic.name}>
+            <li key={uuidv4()} className="char__comics-item">
               {comic}
             </li>
           )
@@ -108,4 +110,8 @@ const View = ({ char }) => {
       </ul>
     </Fragment>
   )
+}
+
+CharInfo.propTypes = {
+  charId: PropTypes.number
 }
