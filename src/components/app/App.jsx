@@ -7,6 +7,7 @@ import CharInfo from "../char-info/CharInfo";
 
 import decoration from "../../resources/img/decoration.png";
 import { ErrorBoundary } from '../errorBoundary/ErrorBoundary';
+import CharSearch from '../char-search/CharSearch';
 export default class App extends Component{
    state = {
       selectedChar: null
@@ -28,6 +29,7 @@ export default class App extends Component{
               <CharInfo charId={this.state.selectedChar}  />
             </ErrorBoundary>
           </div>
+          <CharSearch />
           <img src={decoration} alt="decoration" className="bg-decoration" />
         </main>
       </div>
