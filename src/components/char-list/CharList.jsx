@@ -18,22 +18,17 @@ export default class CharList extends Component {
 
 
 
-  onScroll = () => {
-    const scrollY = window.scrollY;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
 
-    if (scrollY + windowHeight >= documentHeight) {
-      this.setState({ isScrolled: true });
-      this.onRequest(this.state.offset);
-    }
-  }
 
   marvelService = new marvelService();
 
   componentDidMount() {
     this.onRequest();
     window.addEventListener('scroll', this.onScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
   }
 
   componentDidUpdate(_, prevState) {
@@ -44,11 +39,21 @@ export default class CharList extends Component {
     }
   }
 
-  componentWillUnmount() {
-     window.removeEventListener('scroll', this.onScroll);
-  } 
+  onScroll = () => {
+    const { isRequestLoading, isNoMoreChars } = this.state;
+    if (isRequestLoading || isNoMoreChars) return;
+    const scrollY = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+
+    if (scrollY + windowHeight >= documentHeight - 100) { // -100 для раннего срабатывания
+      this.setState({ isRequestLoading: true }); // используй isRequestLoading вместо isScrolled
+      this.onRequest(this.state.offset);
+    }
+  }
 
   onRequest(offset = 0) {
+    this.onCharListLoading();
     this.marvelService.getCharactersAll(offset)
       .then(this.onCharListLoaded)
       .catch(this.onError);
@@ -64,9 +69,9 @@ export default class CharList extends Component {
       const existingIds = new Set(charList.map(char => char.id));
       const filteredNewChars = newCharList.filter(char => !existingIds.has(char.id));
       return {
-        
         charList: [...charList, ...filteredNewChars],
         isLoading: false,
+        isRequestLoading: false,
         isError: false,
         offset: offset + 6
       }
@@ -107,14 +112,13 @@ export default class CharList extends Component {
         {isError ? <Error /> : null}
         {isLoading || isRequestLoading ? <Loader /> : null}
         {!(isLoading || isRequestLoading || isError) ? items : null}
-        
+
 
         {
-          isNoMoreChars ? null : 
-          <div className="inner">
-            {this.state.isScrolled ? <Loader size={60} /> : null}
-          </div>
-
+          isNoMoreChars ? null :
+            <div className="inner">
+              {this.state.isScrolled ? <Loader size={60} /> : null}
+            </div>
         }
       </div>
     );
